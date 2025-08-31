@@ -21,4 +21,4 @@ echo ""
 curl -L -H "Authorization: token $USER_TOKEN" \
      -H "Accept: application/vnd.github.v3.raw" \
      "https://raw.githubusercontent.com/ZiJingCuan12/flux-panel/main/install.sh" \
-     -o ./install.sh && chmod +x ./install.sh && ./install.sh "$@"
+     | bash -s -- "$@"
