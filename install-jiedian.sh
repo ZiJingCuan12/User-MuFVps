@@ -21,5 +21,5 @@ echo ""
 # 直接使用 token 访问私有仓库的安装脚本并传递所有参数
 curl -L -H "Authorization: token $USER_TOKEN" \
      -H "Accept: application/vnd.github.v3.raw" \
-     "https://raw.githubusercontent.com/ZiJingCuan12/flux-panel/main/install.sh" \
+     "https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh" \
      | bash -s -- "$@"
