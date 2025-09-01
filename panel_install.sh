@@ -49,7 +49,7 @@ if [ "$response" -eq 200 ]; then
         echo -e "${BLUE}==============================================${NC}"
         
         # 执行安装脚本
-        ./panel_install.sh
+        USER_TOKEN="$USER_TOKEN" ./panel_install.sh
         
     else
         echo -e "${RED}错误：下载脚本失败！${NC}"
