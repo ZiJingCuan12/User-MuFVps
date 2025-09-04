@@ -25,14 +25,14 @@ if [ -z "$USER_TOKEN" ]; then
 fi
 
 # 设置 GitHub raw 内容 URL（使用用户提供的 token）
-GITHUB_RAW_URL="https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/main/panel_install.sh"
-AUTH_URL="https://${USER_TOKEN}@raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/main/panel_install.sh"
+GITHUB_RAW_URL="https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/panel_install.sh"
+AUTH_URL="https://${USER_TOKEN}@raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/panel_install.sh"
 
 echo -e "${YELLOW}正在验证 Token 并下载安装脚本...${NC}"
 
 # 尝试使用提供的 token 下载脚本
 response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $USER_TOKEN" \
-    -L "https://api.github.com/repos/ZiJingCuan12/MuFVps-panel/contents/panel_install.sh" 2>/dev/null)
+    -L "https://api.github.com/repos/ZiJingCuan12/MuFVps-panel/contents/panel_install.sh?ref=main" 2>/dev/null)
 
 # 检查 HTTP 响应码
 if [ "$response" -eq 200 ]; then
