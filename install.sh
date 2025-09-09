@@ -31,10 +31,29 @@ if [ -z "$TOKEN" ]; then
     exit 1
 fi
 
-# 使用提供的token下载并执行私有仓库的安装脚本
-curl -L -H "Authorization: token $TOKEN" \
-    "https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh" \
-    -o ./install.sh && \
+# 根据国家代码选择下载源
+if [ "$COUNTRY" = "CN" ]; then
+    echo "检测到国内环境，使用Gitee源下载..."
+    DOWNLOAD_URL="https://gitee.com/live-to-death-1/mu-fvps01/raw/master/install.sh"
+    # 国内源下载（不需要token）
+    curl -L --retry 3 --connect-timeout 30 --max-time 60 \
+        "$DOWNLOAD_URL" -o ./install.sh
+else
+    echo "使用GitHub源下载..."
+    DOWNLOAD_URL="https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh"
+    # GitHub源下载（需要token认证）
+    curl -L -H "Authorization: token $TOKEN" \
+        --retry 3 --connect-timeout 30 --max-time 60 \
+        "$DOWNLOAD_URL" -o ./install.sh
+fi
+
+# 检查下载是否成功
+if [ $? -ne 0 ] || [ ! -f "./install.sh" ]; then
+    echo "错误: 下载安装脚本失败!"
+    exit 1
+fi
+
+# 赋予执行权限并执行安装
 chmod +x ./install.sh && \
 ./install.sh -a "$ADDRESS" -s "$SECRET"
 
