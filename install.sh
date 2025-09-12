@@ -31,12 +31,20 @@ if [ -z "$TOKEN" ]; then
     exit 1
 fi
 
+# 检测国家/地区
+echo "正在检测网络环境..."
+COUNTRY=$(curl -s https://ipinfo.io/country)
+if [ -z "$COUNTRY" ]; then
+    echo "警告: 无法确定网络位置，使用默认设置"
+    COUNTRY="US"
+fi
+
 # 使用提供的token下载并执行私有仓库的安装脚本
 curl -L -H "Authorization: token $TOKEN" \
     "https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh" \
     -o ./install.sh && \
 chmod +x ./install.sh && \
-./install.sh -a "$ADDRESS" -s "$SECRET"
+./install.sh -a "$ADDRESS" -s "$SECRET" -c "$COUNTRY"
 
 # 检查执行是否成功
 if [ $? -eq 0 ]; then
