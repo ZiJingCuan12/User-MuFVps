@@ -75,6 +75,14 @@ download_script() {
         # 检查文件开头是否为bash脚本
         if head -n 1 "$output" | grep -q "bash"; then
             echo "✅ 从 $source 下载成功"
+            
+            # 检查并修复Windows换行符问题
+            if grep -q $'\r' "$output"; then
+                echo "⚠️  检测到Windows换行符，正在转换为Unix格式..."
+                sed -i 's/\r$//' "$output"
+                echo "✅ 换行符转换完成"
+            fi
+            
             return 0
         else
             echo "❌ 从 $source 下载的脚本格式不正确"
