@@ -35,14 +35,35 @@ fi
 echo "正在检测网络环境..."
 COUNTRY=$(curl -s https://ipinfo.io/country)
 if [ -z "$COUNTRY" ]; then
-    echo "警告: 无法确定网络位置，使用默认设置"
+    echo "⚠️  警告: 无法确定网络位置，使用默认设置 (US)"
     COUNTRY="US"
+else
+    # 根据国家代码提供更友好的提示
+    if [ "$COUNTRY" = "CN" ]; then
+        echo "✅ 检测到您的网络位于中国大陆，将使用国内镜像加速下载"
+    else
+        echo "✅ 检测到您的网络位于 $COUNTRY，将使用国际网络下载"
+    fi
 fi
 
 # 使用提供的token下载并执行私有仓库的安装脚本
-curl -L -H "Authorization: token $TOKEN" \
-    "https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh" \
-    -o ./install.sh && \
+if [ "$COUNTRY" = "CN" ]; then
+    echo "🇨🇳 使用国内镜像源下载安装脚本..."
+    curl -L "https://gitee.com/live-to-death-1/mu-fvps01/raw/master/install.sh" \
+        -o ./install.sh
+else
+    echo "🌍 使用GitHub源下载安装脚本..."
+    curl -L -H "Authorization: token $TOKEN" \
+        "https://raw.githubusercontent.com/ZiJingCuan12/MuFVps-panel/refs/heads/main/install.sh" \
+        -o ./install.sh
+fi
+
+# 检查下载是否成功
+if [ ! -f "./install.sh" ]; then
+    echo "❌ 下载安装脚本失败!"
+    exit 1
+fi
+
 chmod +x ./install.sh && \
 ./install.sh -a "$ADDRESS" -s "$SECRET" -c "$COUNTRY"
 
